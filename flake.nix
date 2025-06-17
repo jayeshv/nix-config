@@ -7,15 +7,19 @@
         url = "github:nix-darwin/nix-darwin/master";
         inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager  }:
   let
     configuration = { pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
-        [ pkgs.vim pkgs.emacs ];
+        [ pkgs.vim ];
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -30,8 +34,38 @@
       # $ darwin-rebuild changelog
       system.stateVersion = 6;
 
+      # Declare the user that will be running `nix-darwin`.
+      users.users.jayeshv = {
+        name = "jayeshv";
+        home = "/Users/jayeshv";
+      };
+
+      # Create /etc/zshrc that loads the nix-darwin environment.
+      programs.zsh.enable = true;
+
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+    };
+    homeconfig = {pkgs, ...}: {
+      # this is internal compatibility configuration 
+      # for home-manager, don't change this!
+      home.stateVersion = "25.05";
+      # Let home-manager install and manage itself.
+      programs.home-manager.enable = true;
+
+      home = {
+        packages = with pkgs; [ pkgs.emacs ];
+        
+        sessionVariables = {
+          EDITOR = "emacs";
+        };
+          
+        file = {
+          ".vimrc" = {
+            source = ./vim_config;
+          };
+        };
+      };
     };
   in
   {
@@ -39,7 +73,13 @@
     # $ darwin-rebuild build --flake .#Jayeshs-MacBook-Pro
     darwinConfigurations."Jayeshs-MacBook-Pro" = nix-darwin.lib.darwinSystem {
       modules = [ 
-          configuration
+        configuration
+        home-manager.darwinModules.home-manager  {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.verbose = true;
+          home-manager.users.jayeshv = homeconfig;
+        }
       ];
     };
   };
