@@ -4,8 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
-        url = "github:nix-darwin/nix-darwin/master";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -20,6 +20,14 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages =
         [ pkgs.vim ];
+
+      homebrew = {
+        enable = true;
+        onActivation.cleanup = "uninstall";
+        taps = [];
+        brews = [ "cowsay" ];
+        casks = [ "freecad" ];
+      };
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
@@ -40,47 +48,65 @@
         home = "/Users/jayeshv";
       };
 
+      system.primaryUser = "jayeshv";
+
       # Create /etc/zshrc that loads the nix-darwin environment.
-      programs.zsh.enable = true;
+      programs.zsh = {
+        enable = true;
+      };
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
     };
     homeconfig = {pkgs, ...}: {
-      # this is internal compatibility configuration 
+      # this is internal compatibility configuration
       # for home-manager, don't change this!
       home.stateVersion = "25.05";
       # Let home-manager install and manage itself.
       programs.home-manager.enable = true;
+      fonts.fontconfig.enable = true;
 
       home = {
-        packages = with pkgs; [ pkgs.emacs ];
-        
+        packages = with pkgs; [
+          python313
+          python313Packages.ipython
+          tmux
+          pkgs.emacs
+          alacritty
+          firefox
+          blender
+          dejavu_fonts
+          nerd-fonts.cousine
+        ];
+
         sessionVariables = {
           EDITOR = "emacs";
         };
-          
+
         file = {
-          ".vimrc" = {
-            source = ./vim_config;
-          };
+          ".vimrc".source = ./vim_config;
+          ".zshrc".source = ./zshrc.sh;
+          ".alacritty.toml".source = ./alacritty.toml;
+          ".gitconfig".source = ./gitconfig;
+          ".gitignore".source = ./gitignore;
+          ".emacs".source = ./emacs.el;
         };
       };
     };
   in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#Jayeshs-MacBook-Pro
-    darwinConfigurations."Jayeshs-MacBook-Pro" = nix-darwin.lib.darwinSystem {
-      modules = [ 
-        configuration
-        home-manager.darwinModules.home-manager  {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.verbose = true;
-          home-manager.users.jayeshv = homeconfig;
-        }
-      ];
+    {
+      # Build darwin flake using:
+      # $ darwin-rebuild build --flake .#Jayeshs-MacBook-Pro
+      darwinConfigurations."Jayeshs-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+        modules = [
+          configuration
+          home-manager.darwinModules.home-manager  {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.verbose = true;
+            home-manager.users.jayeshv = homeconfig;
+          }
+        ];
+      };
     };
-  };
 }
