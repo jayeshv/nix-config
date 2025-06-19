@@ -79,10 +79,6 @@
           nerd-fonts.cousine
         ];
 
-        sessionVariables = {
-          EDITOR = "emacs";
-        };
-
         file = {
           ".vimrc".source = ./vim_config;
           ".zshrc".source = ./zshrc.sh;

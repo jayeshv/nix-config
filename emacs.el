@@ -2,7 +2,6 @@
 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
-
 (require 'package)
 
 (setq native-comp-async-report-warnings-errors nil)
