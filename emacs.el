@@ -231,3 +231,5 @@
 
 (add-to-list 'default-frame-alist
              '(font . "DejaVu Sans Mono-14"))
+
+(setq ispell-program-name "/opt/homebrew/bin/aspell")

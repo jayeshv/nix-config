@@ -25,7 +25,7 @@
         enable = true;
         onActivation.cleanup = "uninstall";
         taps = [];
-        brews = [ "cowsay" ];
+        brews = [ "cowsay" "aspell" ];
         casks = [ "freecad" ];
       };
 
@@ -93,7 +93,7 @@
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#Jayeshs-MacBook-Pro
-      darwinConfigurations."Jayeshs-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."Jayeshs-MacBook-Pro-2" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
           home-manager.darwinModules.home-manager  {
