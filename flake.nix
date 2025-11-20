@@ -71,12 +71,13 @@
           python313
           python313Packages.ipython
           tmux
-          pkgs.emacs
+          emacs
           alacritty
           firefox
           blender
           dejavu_fonts
           nerd-fonts.cousine
+          nodejs_24
         ];
 
         file = {
