@@ -108,5 +108,6 @@ fi
 alias switch="sudo darwin-rebuild switch --flake ~/.config/nix-darwin"
 alias conf="cd ~/.config/nix-darwin"
 alias ipy="ipython"
+alias p="cd ~/works/sociopod"
 
 export PATH=$PATH:/opt/homebrew/bin

@@ -110,6 +110,7 @@
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 (setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
 (setq x-select-enable-clipboard t)
 
 ;; (load-theme 'solarized-zenburn t)
@@ -233,3 +234,27 @@
              '(font . "DejaVu Sans Mono-14"))
 
 (setq ispell-program-name "/opt/homebrew/bin/aspell")
+
+(require 'typescript-mode)
+
+(require 'prettier-js)
+
+(use-package typescript-mode
+  :mode "\\.tsx\\'"
+  :init
+  (progn
+    ;; Other settings you might want for typescript-mode
+    ))
+
+(add-hook 'typescript-mode-hook 'prettier-js-mode)
+(add-hook 'js-mode-hook 'prettier-js-mode)
+(add-hook 'css-mode-hook 'prettier-js-mode)
+(add-hook 'web-mode-hook 'prettier-js-mode)
+
+;; (use-package eglot
+;;   :ensure t
+;;   :hook ((typescript-mode . eglot-ensure)
+;;          (tsx-ts-mode . eglot-ensure))
+;;   :config
+;;   (add-to-list 'eglot-server-programs
+;;                '((typescript-mode tsx-ts-mode) . ("typescript-language-server" "--stdio"))))

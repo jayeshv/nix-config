@@ -74,10 +74,12 @@
           emacs
           alacritty
           firefox
-          blender
+          # blender
+          rustup
           dejavu_fonts
           nerd-fonts.cousine
           nodejs_24
+          nodePackages.prettier
         ];
 
         file = {
@@ -86,7 +88,7 @@
           ".alacritty.toml".source = ./alacritty.toml;
           ".gitconfig".source = ./gitconfig;
           ".gitignore".source = ./gitignore;
-          ".emacs".source = ./emacs.el;
+          ".emacs.d/init.el".source = ./emacs.el;
         };
       };
     };
